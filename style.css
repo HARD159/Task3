@@ -1,0 +1,88 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    display: flex;
+    padding: 30px 0;
+}
+
+.description {
+    max-width: 600px;
+    margin: auto;
+    background-image: linear-gradient(to top, #ccc, #eee);
+    box-shadow: 0 3px 5px #111;
+    padding: 20px;
+    font-size: 1.3rem;
+}
+
+.description h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'Jura', sans-serif;
+}
+
+.description p {
+    margin-bottom: 15px;
+}
+
+.description strong,
+.description em,
+.description h2 {
+    display: inline-block;
+    font-style: italic;
+    letter-spacing: 1px;
+    font-size: 1.4rem;
+}
+
+.description i {
+    font-style: normal;
+    border-bottom: 1px dotted;
+}
+
+.description h2 {
+    margin: 0 0 10px;
+    color: #ff6600;
+}
+
+.description h1,
+.description strong {
+    color: darkcyan;
+    margin-bottom: 10px;
+}
+
+.description ol {
+    padding-left: 20px;
+}
+
+.description ol:last-of-type {
+    margin-bottom: 15px;
+}
+
+.description ul {
+    list-style-type: none;
+    margin-bottom: 15px;
+}
+
+.description li {
+    margin-bottom: 5px;
+}
+
+.description span {
+    color: darkblue;
+}
+
+.description em {
+    color: #62a007;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.info {
+    background-color: lightblue;
+    padding: 20px;
+}

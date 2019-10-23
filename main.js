@@ -17,11 +17,12 @@ let filtersProducts = {
     }
 };
 
-(function main() {
-	productListConversion();						// Пересохранение списка продуктов с более удобным форматом даты
-    filterListInit();                               // Инициализация фильтров
+productListConversion();						// Пересохранение списка продуктов с более удобным форматом даты
+filterListInit();                               // Инициализация фильтров
 
-    let menuActionSelection = prompt("Please select an action \na) View product list \nb) Set filters \nc) Sort items \nq) Exit from the program");
+function main() {
+
+    let menuActionSelection = prompt("Please select an action \na) View product list \nb) Set filters \nc) Sort items \nq) Exit from the program").toLowerCase();
 
     if (menuActionSelection == "a") {
         viewProductList();                          // Посмотреть список товаров
@@ -37,7 +38,21 @@ let filtersProducts = {
         alert('error data');                        // ошибка данных
         main();
     }
-}());
+};
+
+main();
+
+function checkProductFilter(key) {
+    if ((filtersProducts.category[key] == allProducts[key].category) &&             // проверка фильтра категории
+        (filtersProducts.manufacturer[key] == allProducts[key].manufacturer) &&     // проверка фильтра производитель
+        (allProducts[key].price <= filtersProducts.price.max &&                     // проверка фильтра максимальной цены
+         allProducts[key].price >= filtersProducts.price.min) &&                    // проверка фильтра минимальной цены
+        (allProducts[key].createdAtMS <= filtersProducts.createdAt.max &&            // проверка фильтра максимальной даты
+        allProducts[key].createdAtMS >= filtersProducts.createdAt.min)) {            // проверка фильтра минимальной даты
+        	return true;
+    };
+    return false;
+};
 
 function viewProductList() {                       // Функция посмотреть список товаров
     console.clear();
@@ -47,29 +62,30 @@ function viewProductList() {                       // Функция посмо�
 
     for (let key in allProducts) {
         let arrayProduct = [];
-        if (filtersProducts.category[key] == allProducts[key].category) {
-        	if (filtersProducts.manufacturer[key] == allProducts[key].manufacturer){
-        		if (allProducts[key].price <= filtersProducts.price.max && allProducts[key].price >= filtersProducts.price.min) {
-        			if (allProducts[key].createdAtMS <= filtersProducts.createdAt.max && allProducts[key].createdAtMS >= filtersProducts.createdAt.min) {
-        				arrayProduct.push(allProducts[key].category);
-        				arrayProduct.push(allProducts[key].manufacturer);
-        				arrayProduct.push(allProducts[key].price);
-        				arrayProduct.push(transformDate(allProducts[key].createdAtMS));
-        				consoleOutputTable.push(arrayProduct);
-        			};
-        		};
-        	};
+
+        if (checkProductFilter(key)) {
+            arrayProduct.push(allProducts[key].category);
+        	arrayProduct.push(allProducts[key].manufacturer);
+        	arrayProduct.push(allProducts[key].price);
+        	arrayProduct.push(transformDate(allProducts[key].createdAtMS));
+        	consoleOutputTable.push(arrayProduct);
         };
     };
-
     console.table(consoleOutputTable);
-     
 };
-
 
 function transformDate(dateMS) {
 	let dataCreated = new Date(dateMS);
 	return dataCreated.getDay() +'.'+ dataCreated.getMonth() +'.'+ dataCreated.getFullYear() +','+ dataCreated.getHours() +':'+ dataCreated.getMinutes() +':'+ dataCreated.getSeconds();
+};
+
+function backToMenu() {
+    let backMenu = confirm("Back to menu?")
+    if (backMenu){
+        main();
+    } else {
+        setFilters();
+    };
 };
 
 function productListConversion() {				  							// пересохранение списка продуктов с более удобным форматом даты
@@ -106,15 +122,82 @@ function filterListInit() {                       							// перечень ф�
     filtersProducts.createdAt.max = Math.max(...dataListProducts);			// отбирает максимальную дату из dataListProducts и записывает ее в filtersProducts
 };
 
-
-
-
-
-
-
 function setFilters() {                            // Функция установить фильтры
-    alert('Set filters');
+
+    let filterActionSelection = prompt("Please select an filter \na) category \nb) price \nc) manufacturer \nd) data \nx) filter reset \nq) exit to menu").toLowerCase();
+
+    if (filterActionSelection == "a") {
+        let allCategory = [];
+        let categoryString = "";
+
+        for (const i in allProducts) {
+            allCategory.push(allProducts[i].category);
+            let istr = Number(i)+1;
+            categoryString += "\n" + (istr) + ")";
+            categoryString += allProducts[i].category
+        };
+
+        let userCategory = prompt("enter the category numbers "+ categoryString, "1.2.3");
+        let userCategoryArr = userCategory.split(".");
+
+        userCategoryArr.sort(function(a, b) {
+            return a - b;
+        });
+
+        filtersProducts.category = [];
+
+        for (const key in userCategoryArr) {
+            filtersProducts.category[userCategoryArr[key]-1] = allCategory[userCategoryArr[key]-1];
+        };
+
+        backToMenu();
+    } else if (filterActionSelection == "b") {
+        
+        alert('price');
+
+    } else if (filterActionSelection == "c") {
+        let allmanufacturer = [];
+        let manufacturerString = "";
+
+        for (const i in allProducts) {
+            allmanufacturer.push(allProducts[i].manufacturer);
+            let istr = Number(i)+1;
+            manufacturerString += "\n" + (istr) + ")";
+            manufacturerString += allProducts[i].manufacturer
+        };
+
+        let usermanufacturer = prompt("enter the manufacturer numbers "+ manufacturerString, "1.2.3");
+        let usermanufacturerArr = usermanufacturer.split(".");
+
+        usermanufacturerArr.sort(function(a, b) {
+            return a - b;
+        });
+
+        filtersProducts.manufacturer = [];
+
+        for (const key in usermanufacturerArr) {
+            filtersProducts.manufacturer[usermanufacturerArr[key]-1] = allmanufacturer[usermanufacturerArr[key]-1];
+        };
+
+        backToMenu();
+    } else if (filterActionSelection == "d") {
+        alert('data');
+    } else if (filterActionSelection == "x") {
+        alert('filter reset');
+    } else if (filterActionSelection == "q") {
+        alert('exit to menu');
+        main();
+    } else {
+        alert('error data');                        // ошибка данных
+        setFilters();
+    }
 };
+
+
+
+
+
+
 
 function sortItems() {                             // Функция сортировать товары
     alert('Sort items');
@@ -123,7 +206,3 @@ function sortItems() {                             // Функция сорти�
 function exit() {                                  // Выход из программы
     alert('Exit from the program');
 };
-
-
-
-
